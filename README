@@ -1,0 +1,9 @@
+Simple C++/SFML 2D Game Engine
+
+Engine implement hybrid EC/ECS architecture.
+Component elements contain some logic that can be moved to MemoryManager (ComponentManager)
+and SystemManager in the classic ECS architecture
+
+Used resources:
+https://thatgamesguy.co.uk/game-engine-dev/
+https://www.packtpub.com/product/sfml-game-development/9781849696845
