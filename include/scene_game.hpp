@@ -7,16 +7,18 @@
 #include "object.hpp"
 #include "component_sprite.hpp"
 #include "component_keyboard_movement.hpp"
+#include "component_animation.hpp"
 #include "resource_holder.hpp"
 #include "type_identifier.hpp"
+#include "object_collection.hpp"
 
 class SceneGame : public Scene
 {
   private:
-    std::shared_ptr<Object> player_;
     WorkingDirectory&       working_dir_;
     Input                   input_;
     TextureHolder&          texture_holder_;
+    ObjectCollection        objects_;
   
 public:
          SceneGame    (WorkingDirectory& workingDir,

@@ -10,15 +10,18 @@ class CSprite : public Component
 {
 private:
     TextureHolder* texture_holder_;
+    int            current_texture_id_;
     sf::Sprite     sprite_;
 
 public:
          CSprite          (Object* owner);
     void Load             (const std::string& filepath);
     void Load             (int id);
-    void LateUpdate       (float delta_time)            override;
-    void Draw             (Window& window)              override;
+    void LateUpdate       (float delta_time)                   override;
+    void Draw             (Window& window)                     override;
     void SetTextureHolder (TextureHolder* holder);
+    void SetTextureRect   (int x, int y, int width, int height);
+    void SetTextureRect   (const sf::IntRect& rect);
 };
 
 #endif

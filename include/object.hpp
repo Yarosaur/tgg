@@ -13,14 +13,17 @@ class Object
 {
 private:
     std::vector<std::shared_ptr<Component>> components_;
+    bool                                    queued_for_removal_;
     
 public:
-         Object     ();
-    void Awake      ();  // Awake is called when object created. Use to Awake components.
-    void Start      ();  // Start is called after Awake method. Use to initialise variables.
-    void Update     (float delta_time);
-    void LateUpdate (float delta_time);
-    void Draw       (Window& window);
+         Object             ();
+    void Awake              ();  
+    void Start              ();  
+    void Update             (float delta_time);
+    void LateUpdate         (float delta_time);
+    void Draw               (Window& window);
+    bool IsQueuedForRemoval ();
+    void QueueForRemoval    ();
 
     template <typename T>
     std::shared_ptr<T> AddComponent();

@@ -2,6 +2,7 @@
 
 
 Object::Object()
+    : queued_for_removal_ {false}
 {
     AddComponent<CTransform>();
 }
@@ -49,4 +50,16 @@ void Object::Draw(Window& window)
     {
 	components_[i] -> Draw(window);
     }
+}
+
+
+void Object::QueueForRemoval()
+{
+    queued_for_removal_ = true;
+}
+
+
+bool Object::IsQueuedForRemoval()
+{
+    return  queued_for_removal_;
 }

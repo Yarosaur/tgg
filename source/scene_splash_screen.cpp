@@ -1,4 +1,6 @@
 #include "../include/scene_splash_screen.hpp"
+
+
 SceneSplashScreen::SceneSplashScreen(WorkingDirectory&  working_dir, 
 				     SceneStateMachine& scene_state_machine,
 				     Window&            window,

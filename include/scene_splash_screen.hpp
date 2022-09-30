@@ -23,6 +23,7 @@ class SceneSplashScreen : public Scene
     float              current_seconds_;
     TextureHolder&     texture_holder_;
     sf::Sprite         splash_sprite_;
+    
 public:
          SceneSplashScreen(WorkingDirectory&  working_dir,
 			   SceneStateMachine& scene_state_machine,
