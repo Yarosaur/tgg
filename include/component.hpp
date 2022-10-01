@@ -9,6 +9,7 @@ class Component
 {
 protected:
     Object* owner_;
+    
 public:
     Component(Object* owner) : owner_ {owner}  {}
     
@@ -16,7 +17,6 @@ public:
     virtual void Start      ()                 {};
     virtual void Update     (float delta_time) {};
     virtual void LateUpdate (float delta_time) {};
-    virtual void Draw       (Window& window)   {};
 };
 
 #endif

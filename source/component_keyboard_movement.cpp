@@ -1,5 +1,6 @@
 #include "../include/component_keyboard_movement.hpp"
 #include "../include/object.hpp"
+#include "../include/component_transform.hpp"
 
 CKeyboardMovement::CKeyboardMovement(Object* owner)
     : Component   (owner)

@@ -1,4 +1,6 @@
 #include "../include/component_sprite.hpp"
+#include "../include/object.hpp"
+#include "../include/component_transform.hpp"
 
 
 CSprite::CSprite(Object* owner)

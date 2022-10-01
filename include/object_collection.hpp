@@ -2,6 +2,7 @@
 #define __PROJECTS_TGG_OBJECT_COLLECTION_HPP__
 
 #include "object.hpp"
+#include "system_drawable.hpp"
 
 #include <vector>
 #include <memory>
@@ -12,7 +13,8 @@ class ObjectCollection
 private:
     std::vector<std::shared_ptr<Object>> objects_;
     std::vector<std::shared_ptr<Object>> fresh_objects_;
-
+    SDrawable                            drawables_;
+    
 public:
     void Add               (std::shared_ptr<Object> object);
     void Update            (float delta_time);

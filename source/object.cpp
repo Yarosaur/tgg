@@ -1,4 +1,5 @@
 #include "../include/object.hpp"
+#include "../include/component_transform.hpp"
 
 
 Object::Object()
@@ -46,10 +47,7 @@ void Object::LateUpdate(float delta_time)
 
 void Object::Draw(Window& window)
 {
-    for (std::size_t i {0}; i < components_.size(); i++)
-    {
-	components_[i] -> Draw(window);
-    }
+    drawable_ -> Draw(window);
 }
 
 
@@ -62,4 +60,11 @@ void Object::QueueForRemoval()
 bool Object::IsQueuedForRemoval()
 {
     return  queued_for_removal_;
+}
+
+
+
+std::shared_ptr<CDrawable> Object::GetDrawable()
+{
+    return drawable_;
 }

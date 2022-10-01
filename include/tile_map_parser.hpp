@@ -16,7 +16,6 @@
 #include <unordered_map>
 #include <sstream>
 
-
 struct TileSheetData
 {
     int          texture_id;  
@@ -34,17 +33,18 @@ private:
 
 private:
     // reads the XML file and loads in the tileset used
-    std::shared_ptr<TileSheetData>        BuildTileSheetData (rapidxml::xml_node<>* root_node);
+    std::shared_ptr<TileSheets>           BuildTileSheetData (rapidxml::xml_node<>* root_node);
     // returns the data for each tile in each layer
     std::shared_ptr<TileMap>              BuildTileMap       (rapidxml::xml_node<>* root_node);
     // creates and returns the data for one layer within the tile map
     std::pair<std::string,
 	      std::shared_ptr<TileLayer>> BuildTileLayer     (rapidxml::xml_node<>* layer_node,
-							      std::shared_ptr<TileSheetData> tileS_sheet_data);
+							      std::shared_ptr<TileSheets> tile_sheets);
 public:
                                           TileMapParser      (TextureHolder& texture_holder);
     std::vector<std::shared_ptr<Object>>  ParseXML           (const std::string& file, sf::Vector2i offset);
     
 };
+
 
 #endif

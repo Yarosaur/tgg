@@ -16,12 +16,17 @@ std::shared_ptr<T> Object::AddComponent()
     }
 
     // Create component 'T' and add it to listT if object does not have it.
-    auto component_ptr { std::make_shared<T>(this) };
-    components_.push_back(component_ptr);
+    auto fresh_component { std::make_shared<T>(this) };
+    components_.push_back(fresh_component);
 
-    return component_ptr;
+    // Check if the component is a drawable.
+    if (std::dynamic_pointer_cast<CDrawable>(fresh_component))
+    {
+	drawable_ = std::dynamic_pointer_cast<CDrawable>(fresh_component);
+    }
+    
+    return fresh_component;
 }
-
 
 
 template <typename T>

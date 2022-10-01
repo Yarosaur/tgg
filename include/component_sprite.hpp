@@ -2,11 +2,11 @@
 #define __PROJECTS_TGG_COMPONENT_SPRITE_HPP__
 
 #include "component.hpp"
-#include "object.hpp"
+#include "component_drawable.hpp"
 #include "resource_holder.hpp"
 #include "type_identifier.hpp"
 
-class CSprite : public Component
+class CSprite : public Component, public CDrawable
 {
 private:
     TextureHolder* texture_holder_;
