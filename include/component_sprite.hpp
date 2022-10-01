@@ -22,6 +22,7 @@ public:
     void SetTextureHolder (TextureHolder* holder);
     void SetTextureRect   (int x, int y, int width, int height);
     void SetTextureRect   (const sf::IntRect& rect);
+    void SetScale         (uint factor_x, uint factor_y);
 };
 
 #endif

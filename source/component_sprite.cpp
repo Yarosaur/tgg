@@ -62,3 +62,9 @@ void CSprite::SetTextureRect(const sf::IntRect& rect)
 {
     sprite_.setTextureRect(rect);
 }
+
+
+void CSprite::SetScale(uint factor_x, uint factor_y)
+{
+    sprite_.setScale(factor_x, factor_y);
+}

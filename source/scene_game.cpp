@@ -1,8 +1,9 @@
 #include "../include/scene_game.hpp"
 
 SceneGame::SceneGame(WorkingDirectory& working_dir, TextureHolder& texture_holder)
-    : working_dir_    {working_dir}
-    , texture_holder_ {texture_holder}
+    : working_dir_     {working_dir}
+    , texture_holder_  {texture_holder}
+    , tile_map_parser_ (texture_holder)
 {
 }
 
@@ -75,7 +76,15 @@ void SceneGame::Create()
 
     animation->AddAnimation(AnimationState::kWalk, walk_animation);
     
-    objects_.Add(player); 
+    objects_.Add(player);
+
+    sf::Vector2i tile_map_offset(0, 32);
+    std::vector<std::shared_ptr<Object>> level_tiles 
+	= tile_map_parser_.ParseXML(working_dir_.Get() + "media/tilemaps/test.xml", tile_map_offset);
+    for (std::size_t i {0}; i < level_tiles.size(); ++i)
+    {
+	objects_.Add(level_tiles[i]);
+    }
 }
 
 

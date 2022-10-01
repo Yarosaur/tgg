@@ -11,6 +11,8 @@
 #include "resource_holder.hpp"
 #include "type_identifier.hpp"
 #include "object_collection.hpp"
+#include "tile_map_parser.hpp"
+
 
 class SceneGame : public Scene
 {
@@ -19,6 +21,7 @@ class SceneGame : public Scene
     Input                   input_;
     TextureHolder&          texture_holder_;
     ObjectCollection        objects_;
+    TileMapParser           tile_map_parser_;
   
 public:
          SceneGame    (WorkingDirectory& workingDir,

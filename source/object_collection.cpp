@@ -48,7 +48,7 @@ void ObjectCollection::ProcessNewObjects()
 	    object -> Start();
 	}
 
-	objects_.assign(fresh_objects_.begin(), fresh_objects_.end());
+	objects_.insert(objects_.end(), fresh_objects_.begin(), fresh_objects_.end());
 	fresh_objects_.clear();
     }
 }
