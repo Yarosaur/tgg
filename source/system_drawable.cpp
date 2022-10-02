@@ -13,7 +13,7 @@ void SDrawable::Add(std::vector<std::shared_ptr<Object>>& objects)
 
 void SDrawable::Add(std::shared_ptr<Object> object)
 {
-    std::shared_ptr<CDrawable> draw { object->GetDrawable() };
+    std::shared_ptr<CDrawable> draw { object->GetComponent<CDrawable>() };
     if (draw)
     {
 	drawables_.emplace_back(object);
@@ -26,8 +26,8 @@ void SDrawable::Sort()
     std::sort(drawables_.begin(), drawables_.end(), 
 	[](std::shared_ptr<Object> a, std::shared_ptr<Object> b) -> bool
 	    {
-		return a->GetDrawable()->GetSortOrder() 
-		    < b->GetDrawable()->GetSortOrder();
+		return a->GetComponent<CDrawable>()->GetSortOrder() 
+		    < b->GetComponent<CDrawable>()->GetSortOrder();
 	    }
 	);
 }

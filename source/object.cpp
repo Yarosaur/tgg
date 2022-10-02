@@ -1,11 +1,13 @@
 #include "../include/object.hpp"
 #include "../include/component_transform.hpp"
+#include "../include/component_instance_id.hpp"
 
 
 Object::Object()
     : queued_for_removal_ {false}
 {
     AddComponent<CTransform>();
+    AddComponent<CInstanceID>();
 }
 
 
@@ -47,7 +49,7 @@ void Object::LateUpdate(float delta_time)
 
 void Object::Draw(Window& window)
 {
-    drawable_ -> Draw(window);
+    GetComponent<CDrawable>() -> Draw(window);
 }
 
 
@@ -62,9 +64,3 @@ bool Object::IsQueuedForRemoval()
     return  queued_for_removal_;
 }
 
-
-
-std::shared_ptr<CDrawable> Object::GetDrawable()
-{
-    return drawable_;
-}

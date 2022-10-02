@@ -26,6 +26,13 @@ struct TileSheetData
 };
 
 
+struct TileLayer
+{
+    std::vector<std::shared_ptr<Tile>> tiles;
+    bool is_visible;
+};
+
+
 class TileMapParser
 {
 private:

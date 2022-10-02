@@ -1,7 +1,7 @@
 #include "../include/window.hpp"
 
 Window::Window(const std::string& window_name)
-    : window_ (sf::VideoMode(800, 600), window_name)
+    : window_ (sf::VideoMode(1920, 1080), window_name)
 {
     window_.setVerticalSyncEnabled(true);
 }

@@ -13,7 +13,6 @@ class Object
 {
 private:
     std::vector<std::shared_ptr<Component>> components_;
-    std::shared_ptr<CDrawable>              drawable_;
     bool                                    queued_for_removal_;
     
 public:
@@ -25,8 +24,6 @@ public:
     void Draw               (Window& window);
     bool IsQueuedForRemoval ();
     void QueueForRemoval    ();
-    
-    std::shared_ptr<CDrawable> GetDrawable();
 
     template <typename T>
     std::shared_ptr<T> AddComponent();

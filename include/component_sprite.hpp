@@ -6,7 +6,7 @@
 #include "resource_holder.hpp"
 #include "type_identifier.hpp"
 
-class CSprite : public Component, public CDrawable
+class CSprite :  public CDrawable
 {
 private:
     TextureHolder* texture_holder_;

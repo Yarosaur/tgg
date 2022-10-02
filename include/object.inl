@@ -19,12 +19,6 @@ std::shared_ptr<T> Object::AddComponent()
     auto fresh_component { std::make_shared<T>(this) };
     components_.push_back(fresh_component);
 
-    // Check if the component is a drawable.
-    if (std::dynamic_pointer_cast<CDrawable>(fresh_component))
-    {
-	drawable_ = std::dynamic_pointer_cast<CDrawable>(fresh_component);
-    }
-    
     return fresh_component;
 }
 

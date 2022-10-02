@@ -4,7 +4,7 @@
 
 
 CSprite::CSprite(Object* owner)
-    : Component           (owner)
+    : CDrawable           (owner)
     , current_texture_id_ {-1}
 {}
 

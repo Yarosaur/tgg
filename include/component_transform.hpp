@@ -8,6 +8,7 @@ class CTransform : public Component
 {
 private:
     sf::Vector2f position_;
+    bool         movable_;  
  
 public:
                  CTransform   (Object* owner);
@@ -18,6 +19,8 @@ public:
     void         SetX         (float x);
     void         SetY         (float y);
     sf::Vector2f GetPosition  () const;
+    bool         IsMovable    () const;
+    void         SetMovable   (bool movable);
 };
 
 #endif

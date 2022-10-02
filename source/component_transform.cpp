@@ -1,8 +1,9 @@
 #include "../include/component_transform.hpp"
 
 CTransform::CTransform(Object* owner)
-    : Component(owner)
-    , position_(0.f, 0.f)
+    : Component  (owner)
+    , position_  (0.f, 0.f)
+    , movable_   {true}
 {}
 
 
@@ -47,6 +48,18 @@ void CTransform::SetY(float y)
 sf::Vector2f CTransform::GetPosition() const
 {
     return position_;
+}
+
+
+bool CTransform::IsMovable() const
+{
+    return movable_;
+}
+
+
+void CTransform::SetMovable(bool movable)
+{
+    movable_ = movable;
 }
 
 

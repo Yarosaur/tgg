@@ -3,22 +3,23 @@
 
 
 #include "window.hpp"
+#include "component.hpp"
 
 #include <SFML/Graphics.hpp>
 
 
-class CDrawable
+class CDrawable : public Component
 {
 protected:
-    int sort_order_;
+    std::size_t sort_order_;
 
 public:
-                 CDrawable    ();
+                 CDrawable    (Object* owner);
     virtual      ~CDrawable   ();
     
     virtual void Draw         (Window& window) = 0;
-    void         SetSortOrder (int order);
-    int          GetSortOrder () const;
+    void         SetSortOrder (std::size_t order);
+    std::size_t  GetSortOrder () const;
 };
 
 #endif
