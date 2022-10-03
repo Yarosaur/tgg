@@ -89,3 +89,118 @@ void Quadtree::Clear()
     }
 }
 
+
+std::vector<std::shared_ptr<CBoxCollider>> Quadtree::Search(const sf::FloatRect& area)
+{
+    std::vector<std::shared_ptr<CBoxCollider>> possible_overlaps;
+    Search(area, possible_overlaps);
+    std::vector<std::shared_ptr<CBoxCollider>> return_list;
+    for (auto collider : possible_overlaps)
+    {
+	if (area.intersects(collider->GetCollidable()))
+	{
+	    return_list.emplace_back(collider);
+	}
+    }
+    return return_list;
+}
+
+
+void Quadtree::Search(const sf::FloatRect& area,              
+		      std::vector<std::shared_ptr<CBoxCollider>>& overlapping_objects)
+{
+    overlapping_objects.insert(overlapping_objects.end(), objects_.begin(), objects_.end()); // 1
+    if(children_[0] != nullptr)
+    {
+	int index { GetChildIndex(area) };
+	if(index == kThisTree)
+	{
+	    for(int i {kChildNE}; i < kMaxChild; i++)
+	    {
+		if(children_[i]->GetBounds().intersects(area))
+		{
+		    children_[i]->Search(area, overlapping_objects);
+		}
+	    }
+	}
+	else
+	{
+	    children_[index]->Search(area, overlapping_objects);
+	}
+    }
+}
+
+
+
+const sf::FloatRect& Quadtree::GetBounds() const
+{
+    return bounds_;
+}
+
+
+
+Quadtree::NodeIndex Quadtree::GetChildIndex(const sf::FloatRect& object_bounds)
+{
+    NodeIndex index {kThisTree};
+    double vertical_dividing_line   { bounds_.left + bounds_.width * 0.5f};
+    double horizontal_dividing_line { bounds_.top + bounds_.height * 0.5f };
+    
+    bool north { object_bounds.top < horizontal_dividing_line 
+	&& (object_bounds.height + object_bounds.top < horizontal_dividing_line) };
+    bool south { object_bounds.top > horizontal_dividing_line };
+    bool west  { object_bounds.left < vertical_dividing_line 
+	&& (object_bounds.left + object_bounds.width < vertical_dividing_line) };
+    bool east  { object_bounds.left > vertical_dividing_line };
+    if(east)
+    {
+	if(north)
+	{
+	    index = kChildNE;
+	}
+	else if(south)
+	{
+	    index = kChildSE;
+	}
+    }
+    else if(west)
+    {
+	if(north)
+	{
+	    index = kChildNW;
+	}
+	else if(south)
+	{
+	    index = kChildSW;
+	}
+    }
+    return index;
+}
+
+
+void Quadtree::Split()
+{
+    const int child_width  { bounds_.width / 2 };
+    const int child_height { bounds_.height / 2 };
+    children_[kChildNE] = std::make_shared<Quadtree>(max_objects_, max_depth_, depth_ + 1, 
+						   sf::FloatRect(bounds_.left + child_width,
+								 bounds_.top,
+								 child_width, child_height), 
+						     this);
+    
+    children_[kChildNW] = std::make_shared<Quadtree>(max_objects_, max_depth_, depth_ + 1, 
+						   sf::FloatRect(bounds_.left, bounds_.top,
+								 child_width, child_height), 
+						   this);
+    
+    children_[kChildSW] = std::make_shared<Quadtree>(max_objects_, max_depth_, depth_ + 1, 
+						   sf::FloatRect(bounds_.left,
+								 bounds_.top + child_height,
+								 child_width, child_height), 
+						   this);
+    
+    children_[kChildSE] = std::make_shared<Quadtree>(max_objects_, max_depth_, depth_ + 1, 
+						   sf::FloatRect(bounds_.left + child_width,
+								 bounds_.top + child_height,
+								 child_width, child_height), 
+						   this);
+}

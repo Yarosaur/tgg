@@ -32,17 +32,6 @@ private:
     std::size_t                                depth_;      // Depth of this node in the tree
     sf::FloatRect                              bounds_;     // The bounds of this node.
     
-private:
-    void                 Search       (const sf::FloatRect& area,
-				       std::vector<std::shared_ptr<CBoxCollider>>& overlapping_objects);
-    
-    // Returns the index for the node that will contain 		
-    // the object. -1 is returned if it is this node.
-    NodeIndex            GetChildIndex(const sf::FloatRect& object_bounds);
-
-    // Creates the child nodes.
-    void                 Split        ();
-
 public:
                          Quadtree     ();
                          Quadtree     (std::size_t   max_objects,
@@ -58,6 +47,18 @@ public:
     std::vector<std::shared_ptr<CBoxCollider>>
                          Search       (const sf::FloatRect& area);
     const sf::FloatRect& GetBounds    () const;
+
+private:
+    void                 Search       (const sf::FloatRect& area,
+				       std::vector<std::shared_ptr<CBoxCollider>>& overlapping_objects);
+    
+    // Returns the index for the node that will contain 		
+    // the object. -1 is returned if it is this node.
+    NodeIndex            GetChildIndex(const sf::FloatRect& object_bounds);
+
+    // Creates the child nodes.
+    void                 Split        ();
+
     
 };
 
