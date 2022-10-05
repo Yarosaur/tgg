@@ -1,4 +1,6 @@
 #include "../include/scene_game.hpp"
+#include "../include/debug.hpp"
+
 
 SceneGame::SceneGame(WorkingDirectory& working_dir, TextureHolder& texture_holder)
     : working_dir_     {working_dir}
@@ -75,6 +77,13 @@ void SceneGame::Create()
     walk_animation -> AddFrame(temp_frame);
 
     animation->AddAnimation(AnimationState::kWalk, walk_animation);
+
+    
+    auto collider  { player->AddComponent<CBoxCollider>() };
+    collider->SetCollidable(sf::FloatRect(0, 0, temp_frame.width, temp_frame.height));
+    collider->SetSize(temp_frame.width * 0.4f, temp_frame.height * 0.5f);
+    collider->SetOffset(0.f, 14.f);
+    collider->SetLayer(CollisionLayer::kPlayer);
     
     objects_.Add(player);
 
@@ -115,4 +124,5 @@ void SceneGame::LateUpdate(float delta_time)
 void SceneGame::Draw(Window& window)
 {
     objects_.Draw(window);
+    Debug::Draw(window);
 }

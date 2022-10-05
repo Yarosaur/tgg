@@ -1,5 +1,6 @@
 #include "../include/tile_map_parser.hpp"
 #include "../include/component_transform.hpp"
+#include "../include/component_box_collider.hpp"
 
 #include <cstring>
 
@@ -62,11 +63,21 @@ std::vector<std::shared_ptr<Object>>  TileMapParser::ParseXML(const std::string&
 	    }
 	    
             // Calculate world position.
-	    float x = tile->tile_grid_x * tile_size_x * tile_scale + offset.x;
-	    float y = tile->tile_grid_y * tile_size_y * tile_scale + offset.y;
+	    float x { tile->tile_grid_x * tile_size_x * tile_scale + offset.x };
+	    float y { tile->tile_grid_y * tile_size_y * tile_scale + offset.y };
 	    tile_object->GetComponent<CTransform>()->SetPosition(x, y);
 
             // Add new tile Object to the collection.
+	    if (layer.first == "Collision")
+	    {
+		auto  collider { tile_object->AddComponent<CBoxCollider>() };
+		float left     { x - (tile_size_x * tile_scale) * 0.5f };
+		float top      { y - (tile_size_y * tile_scale) * 0.5f };
+		float width    { tile_size_x * tile_scale };
+		float height   { tile_size_y * tile_scale };
+		collider->SetCollidable(sf::FloatRect(left, top, width, height));
+		collider->SetLayer(CollisionLayer::kTile);
+	    }
 	    tile_objects.emplace_back(tile_object);
 	}
 	layer_count--;

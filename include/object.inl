@@ -26,9 +26,6 @@ std::shared_ptr<T> Object::AddComponent()
 template <typename T>
 std::shared_ptr<T> Object::GetComponent()
 {
-    static_assert(std::is_base_of<Component, T>::value,
-		  "T must derive from Component");
-
     // Check that we have get a component of this type.
     for (auto& component_ptr: components_)
     {

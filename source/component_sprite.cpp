@@ -37,7 +37,12 @@ void CSprite::Load(int id)
 
 void CSprite::LateUpdate(float delta_time)
 {
-    sprite_.setPosition(owner_ -> GetComponent<CTransform>() -> GetPosition());
+    sf::Vector2f        pos          { owner_ -> GetComponent<CTransform>() -> GetPosition() };
+    const sf::IntRect&  spriteBounds { sprite_.getTextureRect() };
+    const sf::Vector2f& spriteScale  { sprite_.getScale() };
+    
+    sprite_.setPosition( pos.x - ((abs(spriteBounds.width) * 0.5f) * spriteScale.x), 
+			 pos.y - ((abs(spriteBounds.height) * 0.5f) * spriteScale.y) );
 }
 
 

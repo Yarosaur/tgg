@@ -14,6 +14,7 @@ enum class CollisionLayer
     kDefault,
     kPlayer,
     kTile,
+    kMaxLayers
 };
 
 

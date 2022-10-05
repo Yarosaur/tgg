@@ -32,6 +32,14 @@ void Window::Draw(const sf::Drawable& drawable)
 }
 
 
+void Window::Draw(const sf::Vertex* vertices, 
+		  std::size_t       vertex_count,
+		  sf::PrimitiveType type)
+{
+    window_.draw(vertices, vertex_count, type);
+}
+
+
 void Window::EndDraw()
 {
     window_.display();

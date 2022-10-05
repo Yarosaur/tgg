@@ -66,11 +66,8 @@ void CBoxCollider::ResolveOverlap(const Manifold& m)
     float resolve  {0};
     float x_diff   { (rect1.left + (rect1.width * 0.5f)) - (rect2->left + (rect2->width * 0.5f)) };
     float y_diff   { (rect1.top + (rect1.height * 0.5f)) - (rect2->top + (rect2->height * 0.5f)) };
-    // min distance to enter collision 
-    float dx_entry { (rect1.width + rect2->width) * 0.5f };
-    float dy_entry { (rect1.height + rect2->height) * 0.5f };
     
-    if (std::fabs(x_diff)  <  dx_entry) 
+    if (std::fabs(x_diff)  >  std::fabs(y_diff)) 
     {
 	if (x_diff > 0) // Colliding on the left.
 	{
@@ -82,10 +79,9 @@ void CBoxCollider::ResolveOverlap(const Manifold& m)
             // We add a negative x value to move the object to the left.
 	    resolve = -((rect1.left + rect1.width) - rect2->left);
 	}
-	transform->AddPosition(resolve, 0); // 5
+	transform->AddPosition(resolve, 0);
     }
-
-    if (std::fabs(y_diff)  < dy_entry )
+    else
     {
 	if (y_diff > 0) // Colliding above.
 	{
@@ -95,8 +91,35 @@ void CBoxCollider::ResolveOverlap(const Manifold& m)
 	else // Colliding below
 	{
             // We add a negative y value to move the object up.
-	    resolve = -((rect1.top + rect1.height) - rect2->top);
+	    resolve -= (rect1.top + rect1.height - rect2->top);
 	}
-	transform->AddPosition(0, resolve); // 5
+	transform->AddPosition(0, resolve); 
     }
+}
+
+
+void CBoxCollider::SetOffset(const sf::Vector2f& offset) 
+{ 
+    offset_ = offset; 
+}
+
+
+void CBoxCollider::SetOffset(float x, float y)
+{
+    offset_.x = x;
+    offset_.y = y;
+}
+
+
+void CBoxCollider::SetSize(const sf::Vector2f& size)
+{
+    aabb_.width  = size.x;
+    aabb_.height = size.y;
+}
+
+
+void CBoxCollider::SetSize(float width, float height)
+{
+    aabb_.width  = width;
+    aabb_.height = height;
 }

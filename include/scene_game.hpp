@@ -8,6 +8,7 @@
 #include "component_sprite.hpp"
 #include "component_keyboard_movement.hpp"
 #include "component_animation.hpp"
+#include "component_box_collider.hpp"
 #include "resource_holder.hpp"
 #include "type_identifier.hpp"
 #include "object_collection.hpp"

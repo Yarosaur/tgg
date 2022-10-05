@@ -3,6 +3,7 @@
 
 #include "object.hpp"
 #include "system_drawable.hpp"
+#include "system_collidable.hpp"
 
 #include <vector>
 #include <memory>
@@ -14,6 +15,7 @@ private:
     std::vector<std::shared_ptr<Object>> objects_;
     std::vector<std::shared_ptr<Object>> fresh_objects_;
     SDrawable                            drawables_;
+    SCollidable                          collidables_;
     
 public:
     void Add               (std::shared_ptr<Object> object);
