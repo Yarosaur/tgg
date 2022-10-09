@@ -60,6 +60,7 @@ std::vector<std::shared_ptr<Object>>  TileMapParser::ParseXML(const std::string&
 		sprite->SetTextureRect(tile_info->texture_rect);
 		sprite->SetScale(tile_scale, tile_scale);
 		sprite->SetSortOrder(layer_count);
+		sprite->SetDrawLayer(DrawLayer::kBackground);
 	    }
 	    
             // Calculate world position.

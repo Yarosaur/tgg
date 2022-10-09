@@ -1,11 +1,15 @@
 #include "../include/scene_game.hpp"
 #include "../include/debug.hpp"
+#include "../include/component_camera.hpp"
 
 
-SceneGame::SceneGame(WorkingDirectory& working_dir, TextureHolder& texture_holder)
+SceneGame::SceneGame(WorkingDirectory& working_dir,
+		     TextureHolder& texture_holder,
+		     Window& window)
     : working_dir_     {working_dir}
     , texture_holder_  {texture_holder}
     , tile_map_parser_ (texture_holder)
+    , window_          {window}
 {
 }
 
@@ -16,6 +20,7 @@ void SceneGame::Create()
     
     auto sprite    { player -> AddComponent<CSprite>() };
     sprite -> SetTextureHolder(&texture_holder_);
+    sprite -> SetDrawLayer(DrawLayer::kEntities);
 
     auto movement  { player -> AddComponent<CKeyboardMovement>() };
     movement -> SetInput(&input_);
@@ -84,6 +89,9 @@ void SceneGame::Create()
     collider->SetSize(temp_frame.width * 0.4f, temp_frame.height * 0.5f);
     collider->SetOffset(0.f, 14.f);
     collider->SetLayer(CollisionLayer::kPlayer);
+
+    auto camera { player->AddComponent<CCamera>() };
+    camera->SetWindow(&window_);
     
     objects_.Add(player);
 
@@ -110,8 +118,11 @@ void SceneGame::ProcessInput()
 
 void SceneGame::Update(float delta_time)
 {
+    objects_.ProcessRemovals();
     objects_.ProcessNewObjects();
     objects_.Update(delta_time);
+
+    Debug::HandleCameraZoom(window_, input_);
 }
 
 

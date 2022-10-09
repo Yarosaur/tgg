@@ -1,60 +1,87 @@
 #include "../include/system_drawable.hpp"
 
-void SDrawable::Add(std::vector<std::shared_ptr<Object>>& objects)
-{
-    for (auto object : objects)
-    {
-	Add(object);
-    }
-    
-    Sort();
-}
-
 
 void SDrawable::Add(std::shared_ptr<Object> object)
 {
-    std::shared_ptr<CDrawable> draw { object->GetComponent<CDrawable>() };
-    if (draw)
+    std::shared_ptr<CDrawable> drawable { object->GetComponent<CDrawable>() };
+    if (drawable)
     {
-	drawables_.emplace_back(object);
+	DrawLayer layer { drawable->GetDrawLayer() };
+	auto      itr   { drawables_.find(layer) };
+	if (itr != drawables_.end())
+	{
+	    drawables_[layer].push_back(drawable);
+	}
+	else
+	{
+	    std::vector<std::shared_ptr<CDrawable>> objs;
+	    objs.push_back(drawable);
+	    drawables_.insert(std::make_pair(layer, objs));
+	}
     }
 }
 
 
 void SDrawable::Sort()
 {
-    std::sort(drawables_.begin(), drawables_.end(), 
-	[](std::shared_ptr<Object> a, std::shared_ptr<Object> b) -> bool
-	    {
-		return a->GetComponent<CDrawable>()->GetSortOrder() 
-		    < b->GetComponent<CDrawable>()->GetSortOrder();
-	    }
-	);
+    for (auto& layer : drawables_)
+    {
+	if(!std::is_sorted(layer.second.begin(), layer.second.end(), LayerSort))
+	{
+	    std::sort(layer.second.begin(), layer.second.end(), LayerSort);
+	}
+    }
+}
+
+
+bool SDrawable::LayerSort(std::shared_ptr<CDrawable> a,
+			  std::shared_ptr<CDrawable> b)
+{
+    return a->GetSortOrder() < b->GetSortOrder();  
+}
+
+
+
+void SDrawable::Add(std::vector<std::shared_ptr<Object>>& objects)
+{
+    for (auto object : objects)
+    {
+	Add(object);
+    }
 }
 
 
 void SDrawable::Draw(Window& window)
 {
-    for (auto& object : drawables_)
+    Sort();
+    
+    for (auto& layer : drawables_)
     {
-	object->Draw(window);
+	for (auto& object : layer.second)
+	{
+	    object->Draw(window);
+	}
     }
 }
 
 
 void SDrawable::ProcessRemovals()
 {
-    auto obj_iter { drawables_.begin() };
-    while (obj_iter != drawables_.end())
+    for (auto& layer : drawables_)
     {
-	auto obj = *obj_iter;
-	if (obj->IsQueuedForRemoval())
+	auto draw_iter { layer.second.begin() };
+	while (draw_iter != layer.second.end())
 	{
-	    obj_iter = drawables_.erase(obj_iter);
-	}
-	else
-	{
-	    ++obj_iter;
+	    
+	    auto drawable { *draw_iter };
+	    if (drawable->GetOwner()->IsQueuedForRemoval())
+	    {
+		draw_iter = layer.second.erase(draw_iter);
+	    }
+	    else
+	    {
+		++draw_iter;
+	    }
 	}
     }
 }

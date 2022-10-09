@@ -3,7 +3,8 @@
 #include "../include/component_instance_id.hpp"
 
 
-SCollidable::SCollidable() 
+SCollidable::SCollidable()
+    : collision_tree_ (5, 5, 0, {0, 0, 4200, 1080}, nullptr)
 {
     std::bitset<32> default_collisions; 
     default_collisions.set((int)CollisionLayer::kDefault); 

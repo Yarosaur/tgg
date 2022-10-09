@@ -8,7 +8,7 @@ Game::Game()
 							     window_,
 							     texture_holder_) };
 
-    auto scene_game    { std::make_shared<SceneGame>(working_dir_, texture_holder_)};
+    auto scene_game    { std::make_shared<SceneGame>(working_dir_, texture_holder_, window_)};
     
     unsigned int splash_screen_id { scene_state_machine_.Add(splash_screen) }; 
     unsigned int scene_game_id    { scene_state_machine_.Add(scene_game) };

@@ -14,12 +14,14 @@ private:
 public:
     enum class Key
     {
-	None,
-	Left,
-	Right,
-	Up,
-	Down,
-	Esc,
+	kNone,
+	kLeft,
+	kRight,
+	kUp,
+	kDown,
+	kEsc,
+	kLBracket,
+	kRBracket,
     };
 
 public:

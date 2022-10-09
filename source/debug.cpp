@@ -60,3 +60,21 @@ void Debug::LogError(const std::string& msg)
 {
     std::cout << "ERROR: " << msg << std::endl;
 }
+
+
+void Debug::HandleCameraZoom(Window& window, Input& input)
+{
+    if(input.IsKeyUp(Input::Key::kLBracket))
+    {
+	sf::View view { window.GetView() };
+	view.zoom(1.1f);
+	window.SetView(view);
+    }
+    else if(input.IsKeyUp(Input::Key::kRBracket))
+    {
+	sf::View view { window.GetView() };
+	view.zoom(0.9f);
+	window.SetView(view);
+    }
+}
+

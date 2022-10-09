@@ -23,10 +23,12 @@ class SceneGame : public Scene
     TextureHolder&          texture_holder_;
     ObjectCollection        objects_;
     TileMapParser           tile_map_parser_;
+    Window&                 window_;
   
 public:
          SceneGame    (WorkingDirectory& workingDir,
-		       TextureHolder& texture_holder);
+		       TextureHolder& texture_holder,
+		       Window& window);
   
     void Create       ()                 override;
     void Destroy      ()                 override;
