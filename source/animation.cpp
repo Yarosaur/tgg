@@ -1,17 +1,34 @@
 #include "../include/animation.hpp"
 
 
-Animation::Animation(FacingDirection dir)
+Animation::Animation()
     : frames_              {}
     , current_frame_index_ {0}
     , current_frame_time_  {0.f}
-    , facing_direction_    {dir}
 {}
 
 
 void Animation::IncrementFrame()
 {
     current_frame_index_ = (current_frame_index_ + 1) % frames_.size();
+}
+
+
+void Animation::RunActionForCurrentFrame()
+{
+    if (actions_.size() > 0)
+    {
+	if ( frames_with_action_[current_frame_index_] )
+	{
+	    auto actions_to_run { actions_.at(current_frame_index_) };
+
+	    for (auto fun : actions_to_run)
+	    {
+		fun();
+	    }
+	
+	}
+    }
 }
 
 
@@ -41,7 +58,9 @@ bool Animation::UpdateFrame(float delta_time)
 	if (current_frame_time_ >= frames_[current_frame_index_].display_time_seconds)
 	{
 	    current_frame_time_ = 0.f;
+	    
 	    IncrementFrame();
+	    RunActionForCurrentFrame();
 
 	    return true;
 	}
@@ -58,24 +77,26 @@ void Animation::Reset()
 }
 
 
-
-void Animation::SetFacingDirection(FacingDirection dir)
+void Animation::AddFrameAction(unsigned int frame, AnimationAction action)
 {
-    if (facing_direction_ != dir)
+    // If the frame is larger than the number of animation frames 
+    // then this request is ignored.
+    if (frame < frames_.size())
     {
-	facing_direction_ = dir;
-
-	// Invert frames
-	for (auto& frame: frames_)
+	auto action_key { actions_.find(frame) };
+	if (action_key == actions_.end())
 	{
-	    frame.x     += frame.width;
-	    frame.width *= -1;
+            // If there is not an existing entry for this frame 
+            // we create one.
+	    frames_with_action_.set(frame);
+	    actions_.insert(std::make_pair(frame, 
+					   std::vector<AnimationAction>{action}) );
+	}
+	else
+	{
+            // An existing entry was found so we 
+            // add the action to the vector
+	    action_key->second.emplace_back(action);
 	}
     }
-}
-
-
-FacingDirection Animation::GetFacingDirection() const
-{
-    return facing_direction_;
 }

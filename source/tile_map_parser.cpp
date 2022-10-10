@@ -138,11 +138,11 @@ std::shared_ptr<TileMap> TileMapParser::BuildTileMap(rapidxml::xml_node<>* root_
     std::shared_ptr<TileMap>     tile_map     { std::make_shared<TileMap>() };
 
     // We loop through each layer in the XML document.
-    for (rapidxml::xml_node<> * node { root_node->first_node("layer") }; node;
-	 node = node->next_sibling())
+    for (rapidxml::xml_node<> * node { root_node->last_node("layer") }; node;
+	 node = node->previous_sibling("layer"))
     {
 	std::pair<std::string, std::shared_ptr<TileLayer>> tile_map_layer { BuildTileLayer(node, tile_sheets) };
-	tile_map->emplace(tile_map_layer);
+	tile_map->emplace_back(tile_map_layer);
     }
     return tile_map;
 }
@@ -154,9 +154,9 @@ TileMapParser::BuildTileLayer(rapidxml::xml_node<>* layer_node,
 			      std::shared_ptr<TileSheets> tile_sheets)
 {
     TileSet tile_set;
-    auto layer  { std::make_shared<TileLayer>() };
-    int  width  { std::atoi(layer_node->first_attribute("width")->value()) };
-    int  height { std::atoi(layer_node->first_attribute("height")->value()) };
+    auto    layer  { std::make_shared<TileLayer>() };
+    int     width  { std::atoi(layer_node->first_attribute("width")->value()) };
+    int     height { std::atoi(layer_node->first_attribute("height")->value()) };
     
     rapidxml::xml_node<>* data_node   { layer_node->first_node("data") };
     char*                 map_indices { data_node->value() };
@@ -184,12 +184,14 @@ TileMapParser::BuildTileLayer(rapidxml::xml_node<>* layer_node,
 	    auto itr { tile_set.find(tile_id) };
 	    if (itr == tile_set.end()) 
 	    {
+		int                            first_id        {0};
 		std::shared_ptr<TileSheetData> tile_sheet_data;
 		for (auto iter { tile_sheets->rbegin() }; iter != tile_sheets->rend(); ++iter)
 		{
 		    if(tile_id >= iter->first)
 		    {
                         // We know the tile belongs to this tileset.
+			first_id = iter->first;
 			tile_sheet_data = iter->second;
 			break;
 		    }
@@ -201,8 +203,8 @@ TileMapParser::BuildTileLayer(rapidxml::xml_node<>* layer_node,
 		    continue;
 		}
 	    
-		int  texture_x { tile_id % tile_sheet_data->columns - 1 };
-		int  texture_y { tile_id / tile_sheet_data->columns };
+		int  texture_x { (tile_id - first_id)% tile_sheet_data->columns };
+		int  texture_y { (tile_id - first_id) / tile_sheet_data->columns };
 		auto tile_info { std::make_shared<TileInfo>(tile_sheet_data->texture_id, tile_id, 
 							    sf::IntRect(texture_x * tile_sheet_data->tile_size.x, 
 									texture_y * tile_sheet_data->tile_size.y, 

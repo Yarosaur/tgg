@@ -1,6 +1,7 @@
 #ifndef __PROJECTS_TGG_COMPONENT_ANIMATION_HPP__
 #define __PROJECTS_TGG_COMPONENT_ANIMATION_HPP__
 
+#include "type_identifier.hpp"
 #include "component.hpp"
 #include "animation.hpp"
 #include "component_sprite.hpp"
@@ -18,26 +19,34 @@ enum class AnimationState
 };
 
 
+enum class FacingDirection
+{
+    kNone,
+    kLeft,
+    kRight,
+    kUp,
+    kDown,
+};
+
+
+
 class CAnimation : public Component
 {
 private:
-    std::shared_ptr<CSprite>              sprite_;
-    
-    std::map<AnimationState,
-	     std::shared_ptr<Animation>>  animations_;
-    
-    std::pair<AnimationState, 
-	      std::shared_ptr<Animation>> current_animation_;
+    std::shared_ptr<CSprite>                              sprite_;
+    std::map<AnimationState, AnimationList>               animations_;
+    std::pair<AnimationState, std::shared_ptr<Animation>> current_animation_;
+    FacingDirection                                       current_direction_;
 
 public:
                    CAnimation            (Object* qwner);
-    void           Awake                 ()                                     override;
-    void           Update                (float delta_time)                     override;
-    void           AddAnimation          (AnimationState state,
-					  std::shared_ptr<Animation> animation);
+    void           Awake                 ()                      override;
+    void           Update                (float delta_time)      override;
     void           SetAnimationState     (AnimationState state);
-    AnimationState GetAnimationState     ()                                     const;
+    AnimationState GetAnimationState     ()                      const;
     void           SetAnimationDirection (FacingDirection dir);
+    void           AddAnimation          (AnimationState state,
+					  AnimationList& list);
 };
 
 #endif

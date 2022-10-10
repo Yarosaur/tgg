@@ -26,62 +26,94 @@ void SceneGame::Create()
     movement -> SetInput(&input_);
 
     auto animation { player -> AddComponent<CAnimation >() };
-    
-    auto idle_animation { std::make_shared<Animation>(FacingDirection::kRight) };
+    std::map<FacingDirection, std::shared_ptr<Animation>> idle_animations;
 
+    // Some hardcoded positions on texture
+    const int kUpYFramePos    {512};
+    const int kLeftYFramePos  {576};
+    const int kDownYFramePos  {640};
+    const int kRightYFramePos {704};
+    
     FrameData temp_frame {};
     temp_frame.texture_id           = texture_holder_.Add(working_dir_.Get() +
-							  "media/textures/viking.png");
-    temp_frame.x                    = 600;
-    temp_frame.y                    = 0;
-    temp_frame.width                = 200;
-    temp_frame.height               = 145;
+							  "media/textures/player.png");
+    // Idle Up Animations
+    temp_frame.x                    = 0;
+    temp_frame.y                    = 0;//kUpYFramePos;
+    temp_frame.width                = 64;
+    temp_frame.height               = 64;
+    temp_frame.display_time_seconds = 0.f;
+    
+    auto idle_up_animation { std::make_shared<Animation>() };
+    idle_up_animation->AddFrame(temp_frame);
+    idle_animations.insert(std::make_pair(FacingDirection::kUp, idle_up_animation));
+
+    // Idle Left Animations
+    temp_frame.y = kLeftYFramePos;
+    
+    auto idle_left_animation { std::make_shared<Animation>() };
+    idle_left_animation->AddFrame(temp_frame);
+    idle_animations.insert(std::make_pair(FacingDirection::kLeft, idle_left_animation));
+
+    // Idle Down Animations
+    temp_frame.y = kDownYFramePos;
+    
+    auto idle_down_animation { std::make_shared<Animation>() };
+    idle_down_animation->AddFrame(temp_frame);
+    idle_animations.insert(std::make_pair(FacingDirection::kDown, idle_down_animation));
+
+    // Idle Right Animations
+    temp_frame.y = kRightYFramePos;
+    
+    auto idle_right_animation { std::make_shared<Animation>() };
+    idle_left_animation->AddFrame(temp_frame);
+    idle_animations.insert(std::make_pair(FacingDirection::kRight, idle_right_animation));
+
+
+    // Walking Up Animations
     temp_frame.display_time_seconds = 0.2f;
-    idle_animation -> AddFrame(temp_frame);
+    std::size_t walking_frame_count {9};
+    std::map<FacingDirection, std::shared_ptr<Animation>> walking_animations;
+    auto walk_up_animation { std::make_shared<Animation>() };
+    for (std::size_t i {0}; i < walking_frame_count; i++)
+    {
+	temp_frame.x = i * temp_frame.width;
+	temp_frame.y = kUpYFramePos;
+	walk_up_animation->AddFrame(temp_frame);
+    }
+    walking_animations.insert(std::make_pair(FacingDirection::kUp, walk_up_animation));
 
-    temp_frame.x = 800;
-    temp_frame.y = 0;
-    idle_animation -> AddFrame(temp_frame);
+    // Walking Left Animations
+    auto  walk_left_animation { std::make_shared<Animation>() };
+    for (std::size_t i {0}; i < walking_frame_count; i++)
+    {
+	temp_frame.x = i * temp_frame.width;
+	temp_frame.y = kLeftYFramePos;
+	walk_left_animation->AddFrame(temp_frame);
+    }
+    walking_animations.insert(std::make_pair(FacingDirection::kLeft, walk_left_animation));
 
-    temp_frame.x = 0;
-    temp_frame.y = 145;
-    idle_animation -> AddFrame(temp_frame);
+    // Walking Down Animations
+    auto  walk_down_animation { std::make_shared<Animation>() };
+    for (std::size_t i {0}; i < walking_frame_count; i++)
+    {
+	temp_frame.x = i * temp_frame.width;
+	temp_frame.y = kDownYFramePos;
+	walk_down_animation->AddFrame(temp_frame);
+    }
+    walking_animations.insert(std::make_pair(FacingDirection::kDown, walk_down_animation));
 
-    temp_frame.x = 200;
-    temp_frame.y = 145;
-    idle_animation -> AddFrame(temp_frame);
+    // Walking Right Animations
+    auto  walk_right_animation { std::make_shared<Animation>() };
+    for (std::size_t i {0}; i < walking_frame_count; i++)
+    {
+	temp_frame.x = i * temp_frame.width;
+	temp_frame.y = kRightYFramePos;
+	walk_right_animation->AddFrame(temp_frame);
+    }
+    walking_animations.insert(std::make_pair(FacingDirection::kRight, walk_right_animation));
     
-    animation->AddAnimation(AnimationState::kIdle, idle_animation);
-
-    auto walk_animation { std::make_shared<Animation>(FacingDirection::kRight) };
-    
-    temp_frame.x                    = 600;
-    temp_frame.y                    = 290;
-    temp_frame.display_time_seconds = 0.15f;
-    walk_animation -> AddFrame(temp_frame);
-
-    
-    temp_frame.x = 800;
-    temp_frame.y = 290;
-    walk_animation -> AddFrame(temp_frame);
-    
-    temp_frame.x = 0;
-    temp_frame.y = 435;
-    walk_animation -> AddFrame(temp_frame);
-    
-    temp_frame.x = 200;
-    temp_frame.y = 435;
-    walk_animation -> AddFrame(temp_frame);
-    
-    temp_frame.x = 400;
-    temp_frame.y = 435;
-    walk_animation -> AddFrame(temp_frame);
-    
-    temp_frame.x = 600;
-    temp_frame.y = 435;
-    walk_animation -> AddFrame(temp_frame);
-
-    animation->AddAnimation(AnimationState::kWalk, walk_animation);
+    animation->AddAnimation(AnimationState::kWalk, walking_animations);
 
     
     auto collider  { player->AddComponent<CBoxCollider>() };
@@ -97,7 +129,7 @@ void SceneGame::Create()
 
     sf::Vector2i tile_map_offset(0, 32);
     std::vector<std::shared_ptr<Object>> level_tiles 
-	= tile_map_parser_.ParseXML(working_dir_.Get() + "media/tilemaps/test.xml", tile_map_offset);
+	= tile_map_parser_.ParseXML(working_dir_.Get() + "media/tilemaps/path.tmx", tile_map_offset);
     for (std::size_t i {0}; i < level_tiles.size(); ++i)
     {
 	objects_.Add(level_tiles[i]);

@@ -34,27 +34,27 @@ void CKeyboardMovement::Update(float delta_time)
     }
     
     float xmove {0};
-    if(input_->IsKeyPressed(Input::Key::Left))
+    if(input_->IsKeyPressed(Input::Key::kLeft))
     {
 	xmove -= move_speed_ * delta_time;
-	animation_->SetAnimationDirection(FacingDirection::kLeft);
     }
-    if(input_->IsKeyPressed(Input::Key::Right))
+    if(input_->IsKeyPressed(Input::Key::kRight))
     {
 	xmove += move_speed_ * delta_time;
-	animation_->SetAnimationDirection(FacingDirection::kRight);
     }
     
     float ymove {0};
-    if(input_->IsKeyPressed(Input::Key::Up))
+    if(input_->IsKeyPressed(Input::Key::kUp))
     {
 	ymove -= move_speed_ * delta_time;
     }
-    if(input_->IsKeyPressed(Input::Key::Down))
+    if(input_->IsKeyPressed(Input::Key::kDown))
     {
 	ymove += move_speed_ * delta_time;
     }
 
+    owner_ -> GetComponent<CTransform>() -> AddPosition(xmove, ymove);
+    
     if(xmove == 0 && ymove == 0)
     {
 	animation_->SetAnimationState(AnimationState::kIdle);
@@ -65,4 +65,35 @@ void CKeyboardMovement::Update(float delta_time)
     }
     
     owner_ -> GetComponent<CTransform>() -> AddPosition(xmove, ymove);
+
+    if(xmove == 0 && ymove == 0)
+    {
+	animation_->SetAnimationState(AnimationState::kIdle);
+    }
+    else
+    {
+	animation_->SetAnimationState(AnimationState::kWalk);
+	if(abs(xmove) > abs(ymove))
+	{
+	    if(xmove < 0)
+	    {
+		animation_->SetAnimationDirection(FacingDirection::kLeft);
+	    }
+	    else
+	    {
+		animation_->SetAnimationDirection(FacingDirection::kRight);
+	    }
+	}
+	else
+	{
+	    if(ymove < 0)
+	    {
+		animation_->SetAnimationDirection(FacingDirection::kUp);
+	    }
+	    else
+	    {
+		animation_->SetAnimationDirection(FacingDirection::kDown);
+	    }
+	}
+    }
 }

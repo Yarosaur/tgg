@@ -6,13 +6,13 @@ CCamera::CCamera(Object* owner) : Component(owner) {}
 
 void CCamera::LateUpdate(float delta_time)
 {
-    if(window_)
+    if (window_)
     {
 	sf::View view { window_->GetView() };
 	const sf::Vector2f& target_pos { GetOwner()->
 		GetComponent<CTransform>()->GetPosition() };
 	//TODO: remove hard-coding of y value
-	view.setCenter(target_pos.x, 500);
+	view.setCenter(target_pos.x, target_pos.y);
 	window_->SetView(view);
     }
 }

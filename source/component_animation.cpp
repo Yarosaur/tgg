@@ -4,6 +4,7 @@
 CAnimation::CAnimation(Object* owner)
     : Component          (owner)
     , current_animation_ (AnimationState::kNone, nullptr)
+    , current_direction_ {FacingDirection::kDown}
 {}
 
 
@@ -28,16 +29,6 @@ void CAnimation::Update(float delta_time)
 }
 
 
-void CAnimation::AddAnimation(AnimationState state, std::shared_ptr<Animation> animation)
-{
-    auto inserted { animations_.insert(std::make_pair(state, animation)) };
-    if (current_animation_.first == AnimationState::kNone)
-    {
-	SetAnimationState(state);
-    }
-}
-
-
 void CAnimation::SetAnimationState(AnimationState state)
 {
     if (current_animation_.first == state)
@@ -45,12 +36,16 @@ void CAnimation::SetAnimationState(AnimationState state)
 	return;
     }
 
-    auto animation_iter {animations_.find(state)};
-    if (animation_iter != animations_.end())
+    auto animation_map_iter {animations_.find(state)};
+    if (animation_map_iter != animations_.end())
     {
-	current_animation_.first  = animation_iter -> first;
-	current_animation_.second = animation_iter -> second;
-	current_animation_.second -> Reset();
+	auto animation { animation_map_iter->second.find(current_direction_) };
+	if (animation != animation_map_iter->second.end())
+	{
+	    current_animation_.first  = animation_map_iter -> first;
+	    current_animation_.second = animation -> second;
+	    current_animation_.second -> Reset();
+	}
     }
 }
 
@@ -63,8 +58,28 @@ AnimationState CAnimation::GetAnimationState() const
 
 void CAnimation::SetAnimationDirection(FacingDirection dir)
 {
-    if (current_animation_.first != AnimationState::kNone)
+    if (dir != current_direction_)
     {
-	current_animation_.second -> SetFacingDirection(dir);
+	current_direction_ = dir;
+	auto animation_map_iter { animations_.find(current_animation_.first) };
+	if (animation_map_iter != animations_.end())
+	{
+	    auto animation { animation_map_iter->second.find(current_direction_) };
+	    if(animation != animation_map_iter->second.end())
+	    {
+		current_animation_.second = animation->second;
+		current_animation_.second->Reset();
+	    }
+	}
+    }
+}
+
+
+void CAnimation::AddAnimation(AnimationState state, AnimationList& animationList)
+{
+    animations_.insert(std::make_pair(state, animationList));
+    if (current_animation_.first == AnimationState::kNone)
+    {
+	SetAnimationState(state);
     }
 }

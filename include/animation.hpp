@@ -1,7 +1,14 @@
 #ifndef __PROJECTS_TGG_ANIMATION_HPP__
 #define __PROJECTS_TGG_ANIMATION_HPP__
 
+
+#include "type_identifier.hpp"
+
 #include <vector>
+#include <map>
+#include <functional>
+#include <bitset>
+
 
 struct FrameData
 {
@@ -14,32 +21,28 @@ struct FrameData
 };
 
 
-enum class FacingDirection
-{
-    kNone,
-    kLeft,
-    kRight,
-};
 
 class Animation
 {
 private:
-    std::vector<FrameData> frames_; 
-    int                    current_frame_index_; 
-    float                  current_frame_time_;
-    FacingDirection        facing_direction_;
+    std::vector<FrameData>                      frames_; 
+    int                                         current_frame_index_; 
+    float                                       current_frame_time_;
+    std::map<int, std::vector<AnimationAction>> actions_;
+    std::bitset<64>                             frames_with_action_;
 
 private:
-    void              IncrementFrame  ();
+    void              IncrementFrame           ();
+    void              RunActionForCurrentFrame ();
 
 public:
-                      Animation          (FacingDirection dir);
-    void              AddFrame           (const FrameData& frame);
-    const FrameData*  GetCurrentFrame    ()                       const;
-    bool              UpdateFrame        (float delta_time);
-    void              Reset              ();
-    void              SetFacingDirection (FacingDirection dir);
-    FacingDirection   GetFacingDirection ()                       const;
+                      Animation                ();
+    void              AddFrame                 (const FrameData& frame);
+    const FrameData*  GetCurrentFrame          () const;
+    bool              UpdateFrame              (float delta_time);
+    void              Reset                    ();
+    void              AddFrameAction           (uint frame, AnimationAction action);
+
    
 };
 
